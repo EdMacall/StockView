@@ -61,8 +61,9 @@ function process() {
 		} else {
 			saveWorkingOn = new User(existingUsers[index],existingPasswords[index]);
 			saveWorkingOn.stocks = existingStocks[index];
-			$("#panel1").hide();
-			$("#panel3").show();
+			
+			callHomePage();
+
 
 		}
 	}
@@ -84,17 +85,23 @@ function initialize() {
 
 }
 function getUsers() {
+	existingUsers = [];
+	existingPasswords = [];
+	existingStocks = [];
 	rootRef.on('value',function(snap) {
 		var pk = snap.val();
-		existingUsers = [];
-		existingPasswords = [];
-		existingStocks = [];
+
 		for(i in pk){
 			existingUsers.push(pk[i]['username']);
 			existingPasswords.push(pk[i]['password']);
 			existingStocks.push(pk[i]['stocks']);
 		}
+
+
+
 	});
+callHomePage();
+
 }
 function checkForExistence(uname){
 	var counter = 0;
@@ -129,7 +136,8 @@ function processCheckBoxes() {
 	    saveDataFirstTime();
 	    $("#panel2").hide();
 	    $("#status2").text("User Added");
-	    $("#panel3").show();
+	    
+	    callHomePage();
     }
 }
 function saveDataFirstTime() {
@@ -142,9 +150,7 @@ function saveDataFirstTime() {
 	});
 }
 function action() {
-	localStorage.setItem("stocks",saveWorkingOn.stocks);
-	location.href = "portfolioview.html";
-	// Start();
+
 }
 function changePassword() {
 	console.log("in changrPassword");
@@ -154,15 +160,10 @@ function processRadio() {
 	  var exchange    = "";
 	  var symbol      ="";
 	  var array = [];
-	  console.log("in processRadio");
 	  xoxo = localStorage.getItem("stocks");
-	  console.log("in processRadio stocks are " + xoxo);
       var toto =	$('input[type="radio"]:checked').val();
-	  console.log("toto = " + toto);
 	  array = toto.split(":");
-	  console.log("array = " + array);
 	  symbol = array[1];
-	  console.log("symbol = " + symbol);
 	  exchange = array[0];
 	  companyName = array[2];
 	}
@@ -177,4 +178,17 @@ function initialize2(){
 	    }
 
 }
+}
+function callHomePage(){
+
+try {
+
+localStorage.removeItem('firebase:host:bob-sproject.firebaseio.com');
+localStorage.setItem("stocksList",saveWorkingOn.stocks);
+localStorage.setItem("userName",userName);
+window.open ('../Home/home.html','_self',false);
+}catch(err){
+
+}
+
 }
